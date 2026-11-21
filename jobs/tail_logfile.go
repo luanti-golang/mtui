@@ -30,11 +30,46 @@ func tailLogfile(a *app.App) {
 
 const errorFlushDelay = time.Millisecond * 500
 
+// engine log line prefix, example: "2026-11-18 23:57:49: ERROR[Main]: ..."
+const engineLogTimestampLayout = "2006-01-02 15:04:05"
+
+// parseEngineLogTimestamp splits the timestamp prefix off a single line
+// returns the unix-millis timestamp (0 if none found) and the remaining text
+func parseEngineLogTimestamp(line string) (int64, string) {
+	l := len(engineLogTimestampLayout)
+	if len(line) < l+1 || line[l] != ':' {
+		return 0, line
+	}
+	t, err := time.ParseInLocation(engineLogTimestampLayout, line[:l], time.Local)
+	if err != nil {
+		return 0, line
+	}
+	return t.UnixMilli(), strings.TrimPrefix(line[l+1:], " ")
+}
+
+// stripEngineLogTimestamps removes the timestamp prefix from every line of the message
+// returns the timestamp of the first line (0 if none found) and the stripped message
+func stripEngineLogTimestamps(message string) (int64, string) {
+	lines := strings.Split(message, "\n")
+	var ts int64
+	for i, line := range lines {
+		lineTs, text := parseEngineLogTimestamp(line)
+		if i == 0 {
+			ts = lineTs
+		}
+		lines[i] = text
+	}
+	return ts, strings.Join(lines, "\n")
+}
+
 func insertEngineLog(a *app.App, event, message string) error {
+	ts, message := stripEngineLogTimestamps(message)
 	return a.Repos.LogRepository.Insert(&types.Log{
-		Category: types.CategoryService,
-		Event:    event,
-		Message:  message,
+		// falls back to the current time in the repository if 0
+		Timestamp: ts,
+		Category:  types.CategoryService,
+		Event:     event,
+		Message:   message,
 	})
 }
 
