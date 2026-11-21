@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"io"
 	"mtui/app"
 	"mtui/types"
 	"strings"
@@ -12,7 +13,11 @@ import (
 
 func tailLogfile(a *app.App) {
 	for {
-		t, err := tail.TailFile(a.Config.TailEngineLogfile, tail.Config{Follow: true})
+		// start at the end of the file, existing lines were already imported on a previous run
+		t, err := tail.TailFile(a.Config.TailEngineLogfile, tail.Config{
+			Follow:   true,
+			Location: &tail.SeekInfo{Offset: 0, Whence: io.SeekEnd},
+		})
 		if err != nil {
 			logrus.WithError(err).Error("TailFile error")
 		} else {
