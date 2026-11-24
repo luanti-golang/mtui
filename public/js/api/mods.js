@@ -35,3 +35,5 @@ export const check_updates = () => protected_fetch("api/mods/checkupdates", {
 });
 
 export const remove_mod = id => fetch(`api/mods/${id}`, {method: "DELETE"});
+
+export const get_vcs_packages = () => protected_fetch("api/mods/vcs-packages");

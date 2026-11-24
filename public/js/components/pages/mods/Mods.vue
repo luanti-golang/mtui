@@ -8,6 +8,7 @@ import {
 	update,
 	get_all
 } from '../../../service/mods.js';
+import { get_vcs_packages } from '../../../api/mods.js';
 import { update_settings } from '../../../service/mtconfig.js';
 
 import FeedbackButton from '../../FeedbackButton.vue';
@@ -34,8 +35,32 @@ export default {
 			add_version: "",
 			breadcrumb: [START, ADMINISTRATION, MODS],
 			update_handle: null,
-			busy: false
+			busy: false,
+			vcs_packages: []
 		};
+	},
+	mounted: async function() {
+		try {
+			const list = await get_vcs_packages();
+			this.vcs_packages = (list || []).filter(p => p.repo && p.name);
+		} catch (e) {
+			// autocomplete is optional
+		}
+	},
+	watch: {
+		add_name: function(name) {
+			if (!name || this.add_url) {
+				return;
+			}
+			const pkg = this.vcs_packages.find(p => p.name == name);
+			if (!pkg) {
+				return;
+			}
+			this.add_url = pkg.repo;
+			if (["mod", "game", "txp"].includes(pkg.type)) {
+				this.add_mod_type = pkg.type;
+			}
+		}
 	},
 	created: function() {
         this.update_handle = setInterval(update, 2000);
@@ -82,6 +107,23 @@ export default {
 		mods: () => get_mods_by_type("mod"),
 		worldmods: () => get_mods_by_type("worldmods"),
 		txps: () => get_mods_by_type("txp"),
+		name_suggestions: function() {
+			const q = this.add_name.toLowerCase();
+			if (!q) {
+				return [];
+			}
+			const prefix = [];
+			const contains = [];
+			for (const p of this.vcs_packages) {
+				const n = p.name.toLowerCase();
+				if (n.startsWith(q)) {
+					prefix.push(p);
+				} else if (n.includes(q)) {
+					contains.push(p);
+				}
+			}
+			return prefix.concat(contains).slice(0, 50);
+		},
 		add_name_valid: function() {
 			return (this.add_name == "" || modname_regex.test(this.add_name));
 		}
@@ -144,8 +186,15 @@ export default {
   							class="form-control"
   							type="text"
   							placeholder="Mod name"
+  							list="vcs-packages"
+  							autocomplete="off"
   							v-model="add_name"
   							v-bind:class="{'is-invalid': !add_name_valid}"/>
+  						<datalist id="vcs-packages">
+  							<option v-for="p in name_suggestions" :key="p.author + '/' + p.name" :value="p.name">
+  								{{p.title}} ({{p.author}})
+  							</option>
+  						</datalist>
   						<div class="invalid-feedback" v-if="!add_name_valid">
   							Allowed modname characters: a-z A-Z 0-9 _
   						</div>
