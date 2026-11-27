@@ -15,7 +15,7 @@ require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/hpcloud/tail v1.0.0
 	github.com/luanti-golang/areasparser v1.0.7
-	github.com/luanti-golang/mapparser v1.0.6
+	github.com/luanti-golang/mapparser v1.1.1
 	github.com/luanti-golang/mtdb v1.1.57
 	github.com/mattn/go-sqlite3 v1.14.53
 	github.com/modelcontextprotocol/go-sdk v1.8.0
