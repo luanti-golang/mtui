@@ -7,6 +7,7 @@ func Start(a *app.App) {
 	go chatlogCleanup(a)
 	go mediaScan(a)
 	go modAutoUpdate(a)
+	go mapcleanerResume(a)
 
 	if a.Config.TailEngineLogfile != "" {
 		go tailLogfile(a)

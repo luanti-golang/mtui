@@ -105,6 +105,15 @@ func Setup(a *app.App) error {
 	acfgr.HandleFunc("/{key}", api.Secure(api.GetConfig)).Methods(http.MethodGet)
 	acfgr.HandleFunc("/{key}", api.Secure(api.SetConfig)).Methods(http.MethodPost)
 
+	mcr := apir.PathPrefix("/mapcleaner").Subrouter()
+	mcr.Use(SecureHandler(api.PrivCheck(types.PRIV_SERVER), api.FeatureCheck(types.FEATURE_MAPCLEANER)))
+	mcr.HandleFunc("/settings", api.Secure(api.GetMapcleanerSettings)).Methods(http.MethodGet)
+	mcr.HandleFunc("/settings", api.Secure(api.SetMapcleanerSettings)).Methods(http.MethodPost)
+	mcr.HandleFunc("/status", api.Secure(api.GetMapcleanerStatus)).Methods(http.MethodGet)
+	mcr.HandleFunc("/start", api.Secure(api.StartMapcleaner)).Methods(http.MethodPost)
+	mcr.HandleFunc("/pause", api.Secure(api.PauseMapcleaner)).Methods(http.MethodPost)
+	mcr.HandleFunc("/reset", api.Secure(api.ResetMapcleaner)).Methods(http.MethodPost)
+
 	mr := apir.PathPrefix("/mail").Subrouter()
 	mr.Use(SecureHandler(api.PrivCheck(types.PRIV_INTERACT), api.FeatureCheck(types.FEATURE_MAIL)))
 	mr.HandleFunc("/folder/inbox", api.Secure(api.GetInbox)).Methods(http.MethodGet)

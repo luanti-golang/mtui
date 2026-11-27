@@ -12,6 +12,8 @@ const (
 	ConfigApiKey             ConfigKey = "api_key"
 	ConfigThemeKey           ConfigKey = "theme"
 	ConfigLogStreamTimestamp ConfigKey = "logstream_timestamp"
+	ConfigMapcleanerSettings ConfigKey = "mapcleaner_settings"
+	ConfigMapcleanerState    ConfigKey = "mapcleaner_state"
 )
 
 func (m *ConfigEntry) TableName() string {

@@ -30,11 +30,15 @@ import Mesecons from './components/pages/Mesecons.vue';
 import Luacontroller from './components/pages/Luacontroller.vue';
 import Play from './components/pages/Play.vue';
 import RestartConditions from './components/pages/administration/RestartConditions.vue';
+import MapCleaner from './components/pages/administration/MapCleaner.vue';
 
 export default [{
 	path: "/", component: Start
 }, {
 	path: "/restart-conditions", component: RestartConditions,
+	meta: { requiredPriv: "server" }
+}, {
+	path: "/mapcleaner", component: MapCleaner,
 	meta: { requiredPriv: "server" }
 }, {
 	path: "/login", component: Login

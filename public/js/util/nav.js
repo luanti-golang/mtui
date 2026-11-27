@@ -68,6 +68,9 @@ export default [{
 		match: ["/filebrowser", "/fileedit", "/profiler-view"],
 		visible: () => has_priv("server")
 	}, {
+		name: "Map cleanup", icon: "fa-solid fa-broom", link: "/mapcleaner",
+		visible: () => has_priv("server") && has_feature("mapcleaner")
+	}, {
 		name: "Media server", icon: "fa-solid fa-photo-film", link: "/mediaserver",
 		visible: () => has_priv("server") && has_feature("mediaserver")
 	}, {

@@ -59,5 +59,9 @@
         "description": "wasm web-client for minetest",
         "mods": ["mtui"],
         "experimental": true
+    },{
+        "name": "mapcleaner",
+        "description": "Removal of unprotected map chunks",
+        "experimental": true
     }
 ]

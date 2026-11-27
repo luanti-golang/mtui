@@ -17,6 +17,7 @@ const (
 	FEATURE_MESECONS        FeatureName = "mesecons"
 	FEATURE_ATM             FeatureName = "atm"
 	FEATURE_LUANTI_WEB    FeatureName = "minetest_web"
+	FEATURE_MAPCLEANER    FeatureName = "mapcleaner"
 )
 
 type Feature struct {

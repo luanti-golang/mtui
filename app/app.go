@@ -34,6 +34,7 @@ type App struct {
 	Config             *types.Config
 	Mediaserver        *mediaserver.MediaServer
 	GeoipResolver      GeoIPResolver
+	MapCleaner         *MapCleaner
 	Version            string
 	offline_xban_cache *cache.Cache[string, *types.XBanEntry]
 }
@@ -78,6 +79,7 @@ func Create(cfg *types.Config) (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not attach database: %v", err)
 	}
+	app.MapCleaner = NewMapCleaner(app)
 
 	// features
 	err = PopulateFeatures(app.Repos.FeatureRepository, cfg.EnabledFeatures)

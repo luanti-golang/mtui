@@ -10,3 +10,4 @@ export const ADMINISTRATION = { icon: "screwdriver-wrench", name: "Server" };
 export const MODS = { name: "Mods", icon: "cubes", link: "/mods" };
 export const FILEBROWSER = { name: "Files", icon: "folder", link: "/filebrowser/" };
 export const RESTART_CONDITIONS = { name: "Automatic restarts", icon: "refresh", link: "/restart-conditions/" };
+export const MAPCLEANER = { name: "Map cleanup", icon: "broom", link: "/mapcleaner" };
